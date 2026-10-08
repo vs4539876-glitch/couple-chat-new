@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Couple Live Chat & Gift Game ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: #fff;
+            min-height: 100vh;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media(min-width: 500px) {
+            .container {
+                min-height: 820px;
+                border-radius: 24px;
+            }
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            flex: 1;
+            padding: 24px;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Setup Screen Header */
+        .setup-header {
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 25px;
+        }
+        .setup-header h1 {
+            color: #ff4b6e;
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+        .setup-header p {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #444;
+            font-size: 14px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .form-control:focus {
+            border-color: #ff4b6e;
+            box-shadow: 0 0 0 4px rgba(255, 75, 110, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ff4b6e 0%, #ff6b8b 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 75, 110, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 5px;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #eee;
+        }
+        .divider span {
+            background: #fff;
+            padding: 0 15px;
+            position: relative;
+            color: #888;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .code-display-box {
+            background: #fff5f7;
+            border: 2px dashed #ff4b6e;
+            border-radius: 16px;
+            padding: 18px;
+            text-align: center;
+            margin: 15px 0;
+        }
+        .code-display-box h3 {
+            font-size: 28px;
+            color: #ff4b6e;
+            letter-spacing: 3px;
+            margin: 8px 0;
+        }
+
+        /* Chat Screen Styling */
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+        }
+        .chat-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #ff4b6e;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .chat-user-info h4 {
+            font-size: 15px;
+            color: #222;
+        }
+        .chat-user-info span {
+            font-size: 12px;
+            color: #28a745;
+        }
+
+        .points-badge {
+            background: #fff0f3;
+            color: #ff4b6e;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 8px rgba(255, 75, 110, 0.1);
+        }
+
+        .progress-container {
+            background: #eee;
+            border-radius: 10px;
+            height: 8px;
+            width: 100%;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4b6e, #ff8da1);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-right: 4px;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 14px;
+            line-height: 1.4;
+            position: relative;
+            word-break: break-word;
+        }
+
+        .message.sent {
+            background: #ff4b6e;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received {
+            background: #f1f0f0;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            outline: none;
+            font-size: 14px;
+        }
+        .chat-input:focus {
+            border-color: #ff4b6e;
+        }
+
+        .send-btn {
+            background: #ff4b6e;
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .send-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* Reward Screen Styling */
+        .reward-screen {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+        }
+        .reward-screen h2 {
+            color: #ff4b6e;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .reward-screen p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+        .gift-card {
+            background: #fff5f7;
+            border: 2px solid #ff4b6e;
+            border-radius: 20px;
+            padding: 20px;
+            width: 100%;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(255, 75, 110, 0.15);
+        }
+        .gift-image {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin: 15px auto;
+            animation: bounce 1.5s infinite alternate;
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+        .gift-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Screen 1: Setup & Code Connection -->
+    <div id="setupScreen" class="screen active">
+        <div class="setup-header">
+            <h1>❤️ Couple Chat & Gift Game</h1>
+            <p>Apna code banayein ya partner ka code dalkar connect karein!</p>
+        </div>
+
+        <div class="form-group">
+            <label>Target Points (e.g. 50, 100, 200)</label>
+            <input type="number" id="targetPointsInput" class="form-control" value="100" min="20" max="1000">
+        </div>
+
+        <div class="form-group">
+            <label>Choose Surprise Gift 🎁</label>
+            <select id="giftTypeInput" class="form-control">
+                <option value="chocolate">🍫 Special Cadbury Chocolate Box</option>
+                <option value="teddy">🧸 Cute Big Teddy Bear</option>
+                <option value="dinner">🍕 Romantic Candle Light Dinner</option>
+            </select>
+        </div>
+
+        <button class="btn" onclick="generateSecretCode()">Generate My Secret Code</button>
+
+        <div id="codeDisplayArea" style="display:none;">
+            <div class="code-display-box">
+                <p style="font-size: 12px; color: #666;">Aapka Secret Code:</p>
+                <h3 id="mySecretCodeDisplay">LOVE786</h3>
+                <p style="font-size: 11px; color: #ff4b6e;">(Yeh code apni Girlfriend ko do)</p>
+            </div>
+            <button class="btn" style="background: #28a745;" onclick="startCreatedChat()">Enter Chat Room</button>
+        </div>
+
+        <div class="divider"><span>OR</span></div>
+
+        <div class="form-group">
+            <label>Partner Ka Code Dalein</label>
+            <input type="text" id="partnerCodeInput" class="form-control" placeholder="e.g. LOVE123">
+        </div>
+        <button class="btn" style="background: #6c757d;" onclick="joinPartnerChat()">Connect with Partner Code</button>
+    </div>
+
+    <!-- Screen 2: Real Chat Room & Points -->
+    <div id="chatScreen" class="screen">
+        <div class="chat-header">
+            <div class="chat-user-info">
+                <div class="avatar" id="partnerAvatar">❤️</div>
+                <div>
+                    <h4 id="partnerNameDisplay">My Love ❤️</h4>
+                    <span>● Live Connected</span>
+                </div>
+            </div>
+            <div class="points-badge">
+                <i class="fa-solid fa-star"></i> <span id="currentPoints">0</span>/<span id="targetDisplay">100</span>
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message received">Hey! Hum dono connected hain. Chalo chat start karte hain aur points earn karte hain! ❤️</div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="messageInput" class="chat-input" placeholder="Type a sweet message..." onkeypress="handleKeyPress(event)">
+            <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Screen 3: Gift Reveal -->
+    <div id="rewardScreen" class="screen reward-screen">
+        <h2>🎉 Target Achieved! 🎉</h2>
+        <p>Aapne successfully apne points complete kar liye hain!</p>
+        
+        <div class="gift-card">
+            <p style="font-size: 13px; color: #ff4b6e; font-weight: 500;">YOU WON THIS SPECIAL GIFT:</p>
+            <img id="rewardImg" src="https://cdn-icons-png.flaticon.com/512/1041/1041916.png" class="gift-image" alt="Gift">
+            <div class="gift-title" id="rewardTitle">Cadbury Chocolate Box 🍫</div>
+        </div>
+
+        <button class="btn" onclick="confirmGift()">Confirm Gift & Celebrate ❤️</button>
+    </div>
+</div>
+
+<script>
+    let currentPoints = 0;
+    let targetPoints = 100;
+    let activeCode = "";
+    let selectedGift = "chocolate";
+
+    const giftData = {
+        chocolate: { name: "Special Cadbury Chocolate Box 🍫", img: "https://cdn-icons-png.flaticon.com/512/1041/1041916.png" },
+        teddy: { name: "Cute Big Teddy Bear 🧸", img: "https://cdn-icons-png.flaticon.com/512/3468/3468087.png" },
+        dinner: { name: "Romantic Candle Light Dinner 🍕", img: "https://cdn-icons-png.flaticon.com/512/3174/3174836.png" }
+    };
+
+    function generateSecretCode() {
+        targetPoints = parseInt(document.getElementById('targetPointsInput').value) || 100;
+        selectedGift = document.getElementById('giftTypeInput').value;
+        activeCode = "LOVE" + Math.floor(100 + Math.random() * 900);
+        
+        localStorage.setItem("couple_code", activeCode);
+        localStorage.setItem("target_points", targetPoints);
+        localStorage.setItem("selected_gift", selectedGift);
+
+        document.getElementById('mySecretCodeDisplay').innerText = activeCode;
+        document.getElementById('codeDisplayArea').style.display = 'block';
+    }
+
+    function startCreatedChat() {
+        initChatSession();
+    }
+
+    function joinPartnerChat() {
+        const pCode = document.getElementById('partnerCodeInput').value.trim();
+        if(!pCode) {
+            alert('Please enter partner code!');
+            return;
+        }
+        activeCode = pCode;
+        targetPoints = parseInt(localStorage.getItem("target_points")) || 100;
+        initChatSession();
+    }
+
+    function initChatSession() {
+        document.getElementById('setupScreen').classList.remove('active');
+        document.getElementById('chatScreen').classList.add('active');
+        document.getElementById('targetDisplay').innerText = targetPoints;
+        updateProgress();
+
+        window.addEventListener('storage', (e) => {
+            if(e.key === 'chat_msg') {
+                const data = JSON.parse(e.newValue);
+                if(data.code === activeCode && data.sender !== 'me') {
+                    appendMessage(data.text, 'received');
+                    addPoints(5);
+                }
+            }
+        });
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const text = input.value.trim();
+        if(!text) return;
+
+        appendMessage(text, 'sent');
+        input.value = '';
+
+        addPoints(5);
+
+        localStorage.setItem('chat_msg', JSON.stringify({
+            code: activeCode,
+            text: text,
+            sender: 'me',
+            time: Date.now()
+        }));
+    }
+
+    function addPoints(pts) {
+        currentPoints += pts;
+        if(currentPoints > targetPoints) currentPoints = targetPoints;
+        updateProgress();
+
+        if(currentPoints >= targetPoints) {
+            setTimeout(showRewardScreen, 800);
+        }
+    }
+
+    function appendMessage(text, type) {
+        const chatMessages = document.getElementById('chatMessages');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${type}`;
+        msgDiv.innerText = text;
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function updateProgress() {
+        document.getElementById('currentPoints').innerText = currentPoints;
+        const percentage = (currentPoints / targetPoints) * 100;
+        document.getElementById('progressBar').style.width = percentage + '%';
+    }
+
+    function showRewardScreen() {
+        document.getElementById('chatScreen').classList.remove('active');
+        document.getElementById('rewardScreen').classList.add('active');
+
+        const gift = giftData[selectedGift] || giftData['chocolate'];
+        document.getElementById('rewardImg').src = gift.img;
+        document.getElementById('rewardTitle').innerText = gift.name;
+    }
+
+    function confirmGift() {
+        alert('🎁 Gift successfully confirmed! Aap dono ki Jodi hamesha khush rahe ❤️');
+        location.reload();
+    }
+</script>
+
+</body>
+</html>
